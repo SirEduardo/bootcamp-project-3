@@ -47,7 +47,7 @@ const searchUrl = "https://api.unsplash.com/search/photos";
 const fetchPhotos = async () => {
   const photos = [];
   try {
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 20; i++) {
       const response = await fetch(url, {
         headers: {
           Authorization: `Client-ID ${accessKey}`,
