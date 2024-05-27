@@ -2,6 +2,10 @@
     padding: 0;
     margin: 0;
 }
+body{
+    height: 100vh;
+    width: 100%;
+}
 header{
     display: flex;
     justify-content: space-between;
@@ -88,4 +92,29 @@ img{
     width: 200px;
     border-radius: 20px;
     object-fit: cover;
+}
+.message-container{
+    display: flex;
+    gap: 100px;
+    flex-direction: column;
+    align-items: center;
+}
+p{
+    font-size: 20px;
+}
+
+.btn-container{
+    display: flex;
+    margin-top: 30px;
+    gap: 20px;
+    justify-content: center;
+}
+.btn-recomended{
+    cursor: pointer;
+    font-size: 20px;
+    padding: 8px 10px;
+    border: none;
+    border-radius: 20px;
+    background-color: rgb(235, 0, 51);
+    color: white;
 }
