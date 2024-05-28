@@ -47,8 +47,7 @@ const searchUrl = "https://api.unsplash.com/search/photos";
 const fetchPhotos = async () => {
   const photos = [];
   try {
-    for (let i = 0; i < 20; i++) {
-      const response = await fetch(url, {
+      const response = await fetch(`${url}?count=20`, {
         headers: {
           Authorization: `Client-ID ${accessKey}`,
         },
@@ -57,12 +56,13 @@ const fetchPhotos = async () => {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      photos.push(data.urls.regular);
-    }
+      data.forEach(photo => {
+      photos.push(photo.urls.full);
+    })
     printPhotos(photos);
   } catch (error) {
     console.log(error);
-    recomendedSearch()
+    recomendedSearch();
   }
 };
 
@@ -77,12 +77,11 @@ const fetchCollection = async (searchQuery) => {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const data = await response.json();
-    const collections = data.results.map((result) => result.urls.regular);
-    if (collections.length > 0){
-      
-    printPhotos(collections);
-    }else{
-      recomendedSearch()
+    const collections = data.results.map((result) => result.urls.full);
+    if (collections.length > 0) {
+      printPhotos(collections);
+    } else {
+      recomendedSearch();
     }
   } catch (error) {
     console.log(error);
@@ -93,24 +92,24 @@ const printPhotos = (photos) => {
   const imagenContainer = document.querySelector(".img-container");
   imagenContainer.innerHTML = "";
 
-  
-    for (const photo of photos) {
-      const divPhoto = document.createElement("div");
-      divPhoto.classList.add("photo-container");
-      const imgElement = document.createElement("img");
-      imgElement.classList.add("photos");
-      imgElement.src = photo;
+  for (const photo of photos) {
+    const divPhoto = document.createElement("div");
+    divPhoto.classList.add("photo-container");
+    const imgElement = document.createElement("img");
+    imgElement.classList.add("photos");
+    imgElement.src = photo;
 
-      divPhoto.appendChild(imgElement);
-      imagenContainer.appendChild(divPhoto);
-    }
-  
-
+    divPhoto.appendChild(imgElement);
+    imagenContainer.appendChild(divPhoto);
   }
+};
 
+const recomendedSearch = () => {
+  const imagenContainer = document.querySelector(".img-container");
+  imagenContainer.innerHTML = "";
 
-const recomendedSearch = () =>{
-  const messagesContainer = document.createElement("div")
+  const errorContainer = document.createElement("div")
+  const messagesContainer = document.createElement("div");
   const errorMessage = document.createElement("p");
   const recomendedMessage = document.createElement("p");
   errorMessage.textContent = "No se han encontrado imagenes relacionadas";
@@ -121,7 +120,7 @@ const recomendedSearch = () =>{
   const btnRecomended2 = document.createElement("button");
   const btnRecomended3 = document.createElement("button");
 
-  messagesContainer.classList.add("message-container")
+  messagesContainer.classList.add("message-container");
   btnContainer.classList.add("btn-container");
   btnRecomended1.classList.add("btn-recomended");
   btnRecomended2.classList.add("btn-recomended");
@@ -130,25 +129,26 @@ const recomendedSearch = () =>{
   btnRecomended1.textContent = "Viajes";
   btnRecomended2.textContent = "Decoracion";
   btnRecomended3.textContent = "Playa";
-  
 
   btnContainer.appendChild(btnRecomended1);
   btnContainer.appendChild(btnRecomended2);
   btnContainer.appendChild(btnRecomended3);
   messagesContainer.appendChild(errorMessage);
-  messagesContainer.appendChild(recomendedMessage)
-  document.body.appendChild(messagesContainer);
-  document.body.appendChild(btnContainer);
+  messagesContainer.appendChild(recomendedMessage);
+  errorContainer.appendChild(messagesContainer)
+  errorContainer.appendChild(btnContainer)
+  document.body.appendChild(errorContainer);
+  
 
   const buttons = document.querySelectorAll(".btn-recomended");
-  buttons.forEach(button => {
+  buttons.forEach((button) => {
     button.addEventListener("click", () => {
+      errorContainer.innerHTML = ""
       input.value = button.textContent;
       fetchCollection(button.textContent);
     });
   });
-
-}
+};
 
 const handleSearch = (e) => {
   e.preventDefault();
@@ -156,8 +156,7 @@ const handleSearch = (e) => {
   if (search.length > 0) {
     fetchCollection(search);
     console.log(search);
-  } else 
-  fetchPhotos();
+  } else fetchPhotos();
 };
 
 form.addEventListener("submit", handleSearch);
