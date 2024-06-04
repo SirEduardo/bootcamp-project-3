@@ -11,6 +11,7 @@ const input = document.createElement("input");
 const divLogin = document.createElement("div");
 const login = document.createElement("button");
 const register = document.createElement("button");
+const burguer = document.querySelector(".hamburguer")
 
 divLogo.classList.add("logo-container");
 img.src =
@@ -29,6 +30,8 @@ login.classList.add("login");
 register.textContent = "Registrarse";
 register.classList.add("register");
 
+
+
 divLogo.appendChild(img);
 divBtn.appendChild(btnNew);
 divBtn.appendChild(btnExplore);
@@ -39,7 +42,38 @@ header.appendChild(form);
 divLogin.appendChild(login);
 divLogin.appendChild(register);
 header.appendChild(divLogin);
+header.appendChild(burguer)
 
+
+burguer.addEventListener("click", () => {
+  modal()
+})
+
+let modalOpen = false
+
+const modal = () => {
+  if (!modalOpen){
+  const modal = document.createElement("div")
+  const login = document.createElement("button")
+  const register = document.createElement("button")
+
+  modal.classList.add("modal")
+  login.textContent = "Iniciar Sesión";
+  login.classList.add("login");
+  register.textContent = "Registrarse";
+  register.classList.add("register");
+
+  modal.appendChild(login)
+  modal.appendChild(register)
+  burguer.appendChild(modal)
+
+  modalOpen = true
+} else {
+  const modalElement = document.querySelector(".modal")
+  modalElement.remove()
+  modalOpen = false
+}
+}
 const accessKey = "EGdKue5UuiKjVkBjOPUDckF_UyZY3ROjv28eWwUeNQU";
 const url = "https://api.unsplash.com/photos/random";
 const searchUrl = "https://api.unsplash.com/search/photos";
@@ -57,7 +91,7 @@ const fetchPhotos = async () => {
       }
       const data = await response.json();
       data.forEach(photo => {
-      photos.push(photo.urls.full);
+      photos.push(photo.urls.regular);
     })
     printPhotos(photos);
   } catch (error) {
@@ -77,7 +111,7 @@ const fetchCollection = async (searchQuery) => {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
     const data = await response.json();
-    const collections = data.results.map((result) => result.urls.full);
+    const collections = data.results.map((result) => result.urls.regular);
     if (collections.length > 0) {
       printPhotos(collections);
     } else {
